@@ -2,16 +2,15 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "ES2022",
-    "rootDir": "./src",
-    "outDir": "./dist",
+    "rootDir": ".",
+    "noEmit": true,
+    "allowJs": true,
     "types": ["node", "jest"],
     "removeComments": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
     "esModuleInterop": true,
     "sourceMap": true,
     "skipLibCheck": true,
-    "strict": true,
-    "strictPropertyInitialization": false
-  }
+    "strict": true
+  },
+  "include": ["src/**/*.ts", "public/js/api.js", "public/js/dom.js"]
 }

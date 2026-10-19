@@ -1,9 +1,12 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { shuffle } from '../common/shuffle';
 import { ContentService } from '../content/content.service';
 import { PublicQuestion, Question, TopicId, toPublic } from '../content/types';
 import { EquationAnalysis, EquationsService } from '../equations/equations.service';
-import { CheckAnswerDto } from './dto/quiz.dto';
+
+export interface CheckAnswer {
+  questionId: string;
+  answer: unknown;
+}
 
 export interface CheckResult {
   correct: boolean;
@@ -13,7 +16,6 @@ export interface CheckResult {
   analysis?: EquationAnalysis;
 }
 
-@Injectable()
 export class QuizService {
   constructor(
     private readonly content: ContentService,
@@ -22,9 +24,15 @@ export class QuizService {
 
   /** Draws questions evenly across the chosen topics, then shuffles them. */
   buildQuiz(topicsParam: string | undefined, count = 10): PublicQuestion[] {
+    if (!Number.isInteger(count) || count < 1 || count > 60) {
+      throw new Error('Question count must be an integer from 1 to 60.');
+    }
+    if (topicsParam !== undefined && !/^[a-z]+(,[a-z]+)*$/.test(topicsParam)) {
+      throw new Error('Topics must be comma-separated topic ids.');
+    }
     const requested = topicsParam ? [...new Set(topicsParam.split(','))] : this.content.allTopicIds();
     const unknown = requested.find((id) => !this.content.hasTopic(id));
-    if (unknown) throw new BadRequestException(`Unknown topic: ${unknown}`);
+    if (unknown) throw new Error(`Unknown topic: ${unknown}`);
 
     const pools = this.content.getQuestionsFor(requested as TopicId[]).map((p) => shuffle(p));
     const picked: Question[] = [];
@@ -37,10 +45,10 @@ export class QuizService {
     return shuffle(picked).map(toPublic);
   }
 
-  check(dto: CheckAnswerDto): CheckResult {
+  check(dto: CheckAnswer): CheckResult {
     const q = this.content.getQuestion(dto.questionId);
-    if (!q) throw new NotFoundException(`Unknown question: ${dto.questionId}`);
-    const bad = () => new BadRequestException('Answer does not match the question type.');
+    if (!q) throw new Error(`Unknown question: ${dto.questionId}`);
+    const bad = () => new Error('Answer does not match the question type.');
 
     switch (q.type) {
       case 'choice': {

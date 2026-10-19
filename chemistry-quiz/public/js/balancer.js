@@ -89,7 +89,7 @@ export function renderBalancer(equations) {
           : 'Balanced, but you can divide every coefficient by the same number to get smaller ones.';
     } catch {
       status.className = 'bstatus warn';
-      status.textContent = 'Could not reach the server to count atoms.';
+      status.textContent = 'Could not count atoms for this equation.';
     }
   }
 

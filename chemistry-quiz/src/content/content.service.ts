@@ -1,4 +1,3 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
 import { TOPICS } from './index';
 import { Lesson, Question, TopicId, TopicMeta } from './types';
 
@@ -7,7 +6,6 @@ export interface TopicSummary extends TopicMeta {
   questionCount: number;
 }
 
-@Injectable()
 export class ContentService {
   private readonly questionsById = new Map<string, Question>(
     TOPICS.flatMap((t) => t.questions).map((q) => [q.id, q]),
@@ -27,7 +25,7 @@ export class ContentService {
 
   getLesson(id: string): Lesson {
     const topic = TOPICS.find((t) => t.meta.id === id);
-    if (!topic) throw new NotFoundException(`Unknown topic: ${id}`);
+    if (!topic) throw new Error(`Unknown topic: ${id}`);
     return topic.lesson;
   }
 

@@ -77,7 +77,7 @@ async function showHome() {
   try {
     topics = await api.topics();
   } catch {
-    if (mine === navigation) showError('Could not load the topics. Is the server running?');
+    if (mine === navigation) showError('Could not load the topics. Please reload the page.');
     return;
   }
   if (mine !== navigation) return;

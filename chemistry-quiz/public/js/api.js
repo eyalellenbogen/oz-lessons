@@ -1,24 +1,15 @@
-async function request(path, options) {
-  const res = await fetch(path, options);
-  if (!res.ok) throw new Error(`Request failed (${res.status})`);
-  return res.json();
-}
+import { ContentService } from '../../src/content/content.service';
+import { EquationsService } from '../../src/equations/equations.service';
+import { QuizService } from '../../src/quiz/quiz.service';
 
-const post = (path, body) =>
-  request(path, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
+const content = new ContentService();
+const equations = new EquationsService();
+const quiz = new QuizService(content, equations);
 
 export const api = {
-  topics: () => request('/api/topics'),
-  lesson: (id) => request(`/api/topics/${encodeURIComponent(id)}/lesson`),
-  quiz: (topicIds, count) => {
-    const params = new URLSearchParams({ count: String(count) });
-    if (topicIds.length) params.set('topics', topicIds.join(','));
-    return request(`/api/quiz?${params}`);
-  },
-  check: (questionId, answer) => post('/api/quiz/check', { questionId, answer }),
-  analyze: (equation, coefficients) => post('/api/equations/analyze', { ...equation, coefficients }),
+  topics: async () => structuredClone(content.listTopics()),
+  lesson: async (id) => structuredClone(content.getLesson(id)),
+  quiz: async (topicIds, count) => structuredClone(quiz.buildQuiz(topicIds.length ? topicIds.join(',') : undefined, count)),
+  check: async (questionId, answer) => structuredClone(quiz.check({ questionId, answer })),
+  analyze: async (equation, coefficients) => equations.analyze(equation.reactants, equation.products, coefficients),
 };
