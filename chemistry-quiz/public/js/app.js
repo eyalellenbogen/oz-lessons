@@ -170,7 +170,7 @@ async function showHome() {
       ),
       h('aside', { class: 'practice-lab', 'aria-labelledby': 'practice-title' },
         h('div', { class: 'lab-image' },
-          h('img', { src: '/images/chemistry-lab.jpg', alt: 'A pipette transferring purple solution into a laboratory sample tray', width: 800, height: 600 }),
+          h('img', { src: new URL('../images/chemistry-lab.jpg', import.meta.url).href, alt: 'A pipette transferring purple solution into a laboratory sample tray', width: 800, height: 600 }),
           h('span', { class: 'image-label' }, icon(FlaskConical), 'The practice lab'),
         ),
         h('div', { class: 'practice-content' },
