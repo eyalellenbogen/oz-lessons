@@ -1,11 +1,16 @@
 import { api } from './api.js';
 import { formula, h, rich } from './dom.js';
 import { renderVisual } from './visuals.js';
+import { createElement, Atom, FlaskConical, ArrowUpRight, Layers, Grid2X2, Sparkles, BookOpen, Shuffle, ArrowRight, Trophy, Sun, Moon } from 'lucide';
 
 const app = document.getElementById('app');
 const crumb = document.getElementById('crumb');
 const PROGRESS_KEY = 'matterquest.progress.v1';
 const COUNT_KEY = 'matterquest.count.v1';
+const THEME_KEY = 'matterquest.theme.v1';
+
+const icon = (definition) => createElement(definition, { class: 'ui-icon', 'aria-hidden': 'true', focusable: 'false' });
+const topicIcons = { matter: Layers, atoms: Atom, periodic: Grid2X2, changes: Sparkles, equations: FlaskConical };
 
 /** Bumped on every navigation so late async results from a previous screen are ignored. */
 let navigation = 0;
@@ -28,6 +33,24 @@ const store = {
     }
   },
 };
+
+const themeToggle = document.getElementById('theme-toggle');
+
+function setTheme(theme) {
+  const dark = theme === 'dark';
+  document.documentElement.dataset.theme = theme;
+  themeToggle.setAttribute('aria-checked', String(dark));
+  themeToggle.title = `Switch to ${dark ? 'light' : 'dark'} mode`;
+  themeToggle.dataset.tooltip = themeToggle.title;
+  themeToggle.replaceChildren(icon(dark ? Sun : Moon));
+}
+
+setTheme(document.documentElement.dataset.theme === 'light' ? 'light' : 'dark');
+themeToggle.addEventListener('click', () => {
+  const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  setTheme(theme);
+  store.write(THEME_KEY, theme);
+});
 
 function shuffle(items) {
   const copy = [...items];
@@ -100,47 +123,70 @@ async function showHome() {
   const allIds = topics.map((t) => t.id);
   const learnThenQuiz = (ids) => lessonFlow(ids, topics, () => startQuiz(ids, topics, count));
   const quizOnly = (ids) => startQuiz(ids, topics, count);
+  const scores = topics.map((topic) => progress[topic.id]?.best).filter((score) => score != null);
+  const mastered = scores.filter((score) => score >= 80).length;
+  const totalQuestions = topics.reduce((total, topic) => total + topic.questionCount, 0);
 
   show(
     h(
       'section',
-      { class: 'hero' },
-      h('h1', {}, 'Get ready for your science quiz'),
-      h('p', {}, 'Each topic has a short lesson with pictures you can play with, then a quiz that checks every answer and explains it.'),
-      h(
-        'div',
-        { class: 'hero-actions' },
-        h('button', { type: 'button', class: 'btn primary big', onClick: () => learnThenQuiz(allIds) }, 'Full study session (all topics)'),
-        h('button', { type: 'button', class: 'btn big', onClick: () => quizOnly(allIds) }, 'Mixed quiz (all topics)'),
+      { class: 'dashboard-heading' },
+      h('div', {},
+        h('p', { class: 'eyebrow' }, 'Grade 8 / Chemistry'),
+        h('h1', {}, 'Your chemistry lab'),
+        h('p', { class: 'dashboard-subtitle' }, 'Small discoveries. Real progress.'),
       ),
-      h('label', { class: 'count-pick', for: 'count' }, 'Quiz length: ', countSelect),
+      h('label', { class: 'count-pick', for: 'count' }, 'Questions per quiz', countSelect),
     ),
     h(
-      'section',
-      { class: 'topics' },
-      ...topics.map((t) => {
-        const best = progress[t.id]?.best;
-        return h(
-          'article',
-          { class: 'topic-card' },
-          h('div', { class: 'topic-code' }, t.code),
-          h('h2', {}, t.title),
-          h('p', {}, t.summary),
-          h(
-            'p',
-            { class: 'meta' },
-            `${t.slideCount} lesson slides, ${t.questionCount} questions`,
-            best != null && h('span', { class: `badge ${best >= 80 ? 'good' : ''}` }, `Best ${best}%`),
-          ),
-          h(
-            'div',
-            { class: 'actions' },
-            h('button', { type: 'button', class: 'btn primary', onClick: () => learnThenQuiz([t.id]) }, 'Learn, then quiz'),
-            h('button', { type: 'button', class: 'btn', onClick: () => quizOnly([t.id]) }, 'Quiz only'),
-          ),
-        );
-      }),
+      'dl', { class: 'study-stats' },
+      h('div', {}, h('dt', {}, 'Topics mastered'), h('dd', {}, `${mastered}`, h('span', {}, ` / ${topics.length}`))),
+      h('div', {}, h('dt', {}, 'Question bank'), h('dd', {}, String(totalQuestions), h('span', {}, ' questions'))),
+      h('div', {}, h('dt', {}, 'Personal best'), h('dd', {}, scores.length ? `${Math.max(...scores)}%` : 'Not yet', icon(Trophy))),
     ),
+    h('div', { class: 'dashboard-grid' },
+      h('section', { class: 'study-path', 'aria-labelledby': 'path-title' },
+        h('div', { class: 'section-heading' }, h('h2', { id: 'path-title' }, 'Your study path'), h('span', { class: 'muted' }, `${topics.length} topics`)),
+        h('div', { class: 'topics' }, ...topics.map((topic, index) => {
+          const best = progress[topic.id]?.best;
+          return h('article', { class: `topic-row topic-${topic.id}` },
+            h('div', { class: 'topic-symbol' }, icon(topicIcons[topic.id])),
+            h('div', { class: 'topic-info' },
+              h('span', { class: 'topic-code' }, `0${index + 1} / ${topic.code}`),
+              h('h3', {}, topic.title),
+              h('p', {}, topic.summary),
+              h('div', { class: 'topic-meta' }, h('span', {}, `${topic.slideCount} slides`), h('span', {}, `${topic.questionCount} questions`)),
+            ),
+            h('div', { class: 'topic-progress' },
+              h('span', { class: best != null && best >= 80 ? 'progress-score mastered' : 'progress-score' }, best == null ? 'Not started' : `${best}% best`),
+              h('progress', { max: 100, value: best ?? 0, 'aria-label': `${topic.title} best score` }),
+            ),
+            h('div', { class: 'actions' },
+              h('button', { type: 'button', class: 'btn lesson-link', onClick: () => learnThenQuiz([topic.id]) }, icon(BookOpen), 'Learn'),
+              h('button', { type: 'button', class: 'btn quiz-link', onClick: () => quizOnly([topic.id]), 'aria-label': `Quiz only: ${topic.title}`, title: `Quiz only: ${topic.title}` }, 'Quiz', icon(ArrowUpRight)),
+            ),
+          );
+        })),
+      ),
+      h('aside', { class: 'practice-lab', 'aria-labelledby': 'practice-title' },
+        h('div', { class: 'lab-image' },
+          h('img', { src: '/images/chemistry-lab.jpg', alt: 'A pipette transferring purple solution into a laboratory sample tray', width: 800, height: 600 }),
+          h('span', { class: 'image-label' }, icon(FlaskConical), 'The practice lab'),
+        ),
+        h('div', { class: 'practice-content' },
+          h('p', { class: 'eyebrow' }, 'All five topics'),
+          h('h2', { id: 'practice-title' }, 'A little bit of everything.'),
+          h('div', { class: 'practice-tags' }, h('span', {}, 'Mixed practice'), h('span', {}, `${totalQuestions} questions`)),
+          h('button', { type: 'button', class: 'btn primary', onClick: () => quizOnly(allIds) }, icon(Shuffle), 'Start mixed quiz', icon(ArrowRight)),
+          h('button', { type: 'button', class: 'btn full-study', onClick: () => learnThenQuiz(allIds) }, icon(BookOpen), 'Full study session'),
+        ),
+        h('div', { class: 'mastery-summary' },
+          icon(Trophy),
+          h('div', {}, h('strong', {}, mastered === topics.length ? 'All topics mastered' : `${topics.length - mastered} topics to master`), h('p', {}, 'Mastery milestone: 80% best score')),
+        ),
+      ),
+    ),
+    h('footer', { class: 'dashboard-footer' }, h('span', {}, 'Stay curious.'), h('span', {}, 'Matter Quest / Grade 8 Science')),
   );
 }
 
@@ -510,5 +556,6 @@ function saveProgress(results) {
   store.write(PROGRESS_KEY, progress);
 }
 
+document.getElementById('home-btn').replaceChildren(icon(Atom), h('span', {}, 'Matter Quest'));
 document.getElementById('home-btn').addEventListener('click', showHome);
 showHome();
