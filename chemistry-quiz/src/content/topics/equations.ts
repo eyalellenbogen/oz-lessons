@@ -194,6 +194,78 @@ q.choice(
     ],
   );
 
+const extraEquations: [string[], string[], number[]][] = [
+  [['N2', 'H2'], ['NH3'], [1, 3, 2]],
+  [['Na', 'Cl2'], ['NaCl'], [2, 1, 2]],
+  [['Mg', 'O2'], ['MgO'], [2, 1, 2]],
+  [['Al', 'O2'], ['Al2O3'], [4, 3, 2]],
+  [['Fe', 'Cl2'], ['FeCl3'], [2, 3, 2]],
+  [['Ca', 'O2'], ['CaO'], [2, 1, 2]],
+  [['KClO3'], ['KCl', 'O2'], [2, 2, 3]],
+  [['CaCO3'], ['CaO', 'CO2'], [1, 1, 1]],
+  [['NaHCO3'], ['Na2CO3', 'CO2', 'H2O'], [2, 1, 1, 1]],
+  [['HgO'], ['Hg', 'O2'], [2, 2, 1]],
+  [['CH4', 'O2'], ['CO2', 'H2O'], [1, 2, 1, 2]],
+  [['C2H6', 'O2'], ['CO2', 'H2O'], [2, 7, 4, 6]],
+  [['C3H8', 'O2'], ['CO2', 'H2O'], [1, 5, 3, 4]],
+  [['C4H10', 'O2'], ['CO2', 'H2O'], [2, 13, 8, 10]],
+  [['C6H12O6', 'O2'], ['CO2', 'H2O'], [1, 6, 6, 6]],
+  [['Zn', 'HCl'], ['ZnCl2', 'H2'], [1, 2, 1, 1]],
+  [['Mg', 'HCl'], ['MgCl2', 'H2'], [1, 2, 1, 1]],
+  [['Al', 'HCl'], ['AlCl3', 'H2'], [2, 6, 2, 3]],
+  [['NaOH', 'HCl'], ['NaCl', 'H2O'], [1, 1, 1, 1]],
+  [['Ca(OH)2', 'HCl'], ['CaCl2', 'H2O'], [1, 2, 1, 2]],
+  [['BaCl2', 'Na2SO4'], ['BaSO4', 'NaCl'], [1, 1, 1, 2]],
+  [['AgNO3', 'NaCl'], ['AgCl', 'NaNO3'], [1, 1, 1, 1]],
+  [['Fe', 'O2'], ['Fe3O4'], [3, 2, 1]],
+  [['CuO', 'H2'], ['Cu', 'H2O'], [1, 1, 1, 1]],
+  [['SO2', 'O2'], ['SO3'], [2, 1, 2]],
+];
+for (const [reactants, products, solution] of extraEquations) {
+  q.equation(reactants, products, solution);
+}
+
+const atomCounts: [string, number, string, number][] = [
+  ['CO2', 3, 'oxygen', 6], ['NH3', 4, 'hydrogen', 12],
+  ['CH4', 2, 'hydrogen', 8], ['O2', 5, 'oxygen', 10],
+  ['N2', 3, 'nitrogen', 6], ['H2O', 5, 'oxygen', 5],
+  ['Ca(OH)2', 2, 'oxygen', 4], ['Al2O3', 3, 'aluminum', 6],
+  ['Na2CO3', 2, 'sodium', 4], ['CaCl2', 4, 'chlorine', 8],
+  ['Mg(NO3)2', 2, 'oxygen', 12], ['C2H6', 3, 'carbon', 6],
+  ['H2SO4', 2, 'oxygen', 8], ['Fe2O3', 4, 'iron', 8],
+  ['Al(OH)3', 3, 'hydrogen', 9], ['Ca3(PO4)2', 2, 'phosphorus', 4],
+];
+for (const [formula, coefficient, element, total] of atomCounts) {
+  q.choice(
+    `How many ${element} atoms are represented by ${coefficient} [[${formula}]]?`,
+    [total, total + 1, total + 2, total * 2].map(String), String(total),
+    `Each formula unit has ${total / coefficient} ${element} atoms. Multiply by the coefficient ${coefficient} to get ${total}. Parentheses multiply every atom inside them.`,
+  );
+}
+
+q.classify('Classify the energy transfer: **{item}**', [ENDO, EXO], [
+  ['A reusable hand warmer releases heat as its liquid crystallizes', EXO, 'Heat flows from the warmer to its surroundings.'],
+  ['An instant cold pack absorbs heat from an injured ankle', ENDO, 'The pack takes in heat from its surroundings.'],
+  ['Liquid water in a kettle absorbs heat to boil', ENDO, 'Vaporization requires an energy input.'],
+  ['Steam releases heat as it condenses inside a radiator', EXO, 'Condensation transfers heat to the surroundings.'],
+  ['Dry ice absorbs heat as it becomes carbon dioxide gas', ENDO, 'Sublimation requires energy.'],
+  ['Water vapor releases heat while forming frost directly', EXO, 'Deposition releases energy.'],
+  ['A camp stove releases heat while propane burns', EXO, 'Combustion releases chemical energy.'],
+  ['A solar-powered chemical process stores absorbed light energy in products', ENDO, 'Energy enters the chemical system.'],
+  ['Molten metal releases heat while solidifying in a mold', EXO, 'Freezing releases heat.'],
+  ['Solid wax absorbs heat while melting on a warm plate', ENDO, 'Melting requires absorbed energy.'],
+])
+  .trueFalse('In a balanced equation, each element has the same atom count on both sides.', true, 'Balancing conserves every kind of atom.')
+  .trueFalse('The coefficient 3 in 3 CO2 multiplies both the carbon and the oxygen atoms.', true, 'It represents three complete carbon dioxide molecules.')
+  .trueFalse('A balanced equation must have the same number of molecules on each side.', false, 'Atom counts must match; molecule counts need not match.')
+  .trueFalse('A missing written coefficient means the coefficient is zero.', false, 'An unwritten coefficient is understood to be one.')
+  .trueFalse('Coefficients 4, 2, 4 are in the lowest whole-number ratio.', false, 'All three can be divided by two to give 2, 1, 2.')
+  .trueFalse('Changing H2O to H2O2 is a valid way to balance a water equation.', false, 'That changes water into hydrogen peroxide, a different substance.')
+  .trueFalse('Reactants are written to the left of the reaction arrow.', true, 'The arrow points from reactants to products.')
+  .trueFalse('An exothermic reaction transfers energy from the reaction system to its surroundings.', true, 'Energy leaves the system, often as heat.')
+  .trueFalse('A reaction that needs an initial spark must be endothermic overall.', false, 'Even an exothermic combustion reaction may need energy to start.')
+  .trueFalse('In a closed container, the total mass stays constant during a chemical reaction.', true, 'No atoms escape or enter, so total mass is conserved.');
+
 export const equations: Topic = {
   meta: {
     id: 'equations',

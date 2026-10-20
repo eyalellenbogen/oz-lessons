@@ -193,6 +193,77 @@ q.choice(
     ],
   );
 
+q.classify('Is **{item}** an element, compound or mixture?', [ELEMENT, COMPOUND, MIXTURE], [
+  ['Pure copper wire', ELEMENT, 'Copper contains only copper atoms.'],
+  ['Pure helium in a sealed tube', ELEMENT, 'Helium contains one kind of atom.'],
+  ['Pure aluminum foil', ELEMENT, 'Aluminum is one element.'],
+  ['Pure neon in a sign tube', ELEMENT, 'Neon is on the periodic table.'],
+  ['Pure silicon crystal', ELEMENT, 'Silicon contains one kind of atom.'],
+  ['Pure magnesium ribbon', ELEMENT, 'Magnesium is an element.'],
+  ['Pure ammonia (NH3)', COMPOUND, 'Nitrogen and hydrogen are chemically bonded.'],
+  ['Pure calcium carbonate (CaCO3)', COMPOUND, 'Calcium, carbon and oxygen are bonded in a fixed ratio.'],
+  ['Pure methane (CH4)', COMPOUND, 'Carbon and hydrogen are bonded.'],
+  ['Pure magnesium oxide (MgO)', COMPOUND, 'Magnesium and oxygen are bonded.'],
+  ['Pure hydrogen peroxide (H2O2)', COMPOUND, 'Hydrogen and oxygen form one compound.'],
+  ['Pure sodium bicarbonate (NaHCO3)', COMPOUND, 'This is one compound with a fixed formula.'],
+  ['Pure glucose (C6H12O6)', COMPOUND, 'Glucose contains bonded carbon, hydrogen and oxygen.'],
+  ['Brass made from copper and zinc', MIXTURE, 'An alloy combines substances physically.'],
+  ['Ocean water containing dissolved salts', MIXTURE, 'Water and several salts are mixed.'],
+  ['Concrete containing cement, sand and gravel', MIXTURE, 'Several materials are physically combined.'],
+  ['Lemonade made from water, sugar and lemon juice', MIXTURE, 'Several substances are mixed.'],
+  ['Helium and oxygen mixed in a tank', MIXTURE, 'Two elements are mixed without bonding.'],
+  ['Carbon dioxide mixed with nitrogen', MIXTURE, 'A compound and an element are mixed.'],
+  ['Sand stirred into salt water', MIXTURE, 'Sand, salt and water retain their identities.'],
+])
+  .classify('Is this mixture homogeneous or heterogeneous: **{item}**?', [HOM, HET], [
+    ['Clear sugar water with all sugar dissolved', HOM, 'The composition is uniform throughout.'],
+    ['Filtered black coffee with no grounds', HOM, 'The dissolved substances are evenly distributed.'],
+    ['A uniform mixture of helium and neon gases', HOM, 'The gases are evenly mixed.'],
+    ['A clear solution of copper sulfate in water', HOM, 'The dissolved compound is evenly distributed.'],
+    ['Salt dissolved completely in warm water', HOM, 'There are no separate salt grains.'],
+    ['A uniform copper-zinc brass sample', HOM, 'The alloy has a uniform composition.'],
+    ['Clear apple juice with no pulp', HOM, 'Dissolved substances are evenly mixed.'],
+    ['A uniform mixture of ethanol and water', HOM, 'The liquids mix into one phase.'],
+    ['A clear sports drink with no sediment', HOM, 'Its dissolved ingredients are evenly distributed.'],
+    ['A uniform mixture of nitrogen and argon', HOM, 'The gases mix evenly.'],
+    ['Oil floating on water', HET, 'There are two visible layers.'],
+    ['Orange juice with pulp', HET, 'Pulp is a separate visible component.'],
+    ['Sand suspended in water', HET, 'Sand particles remain separate from the water.'],
+    ['Granite with visible mineral crystals', HET, 'Different minerals form distinct regions.'],
+    ['Cereal in milk', HET, 'The cereal and milk remain distinct.'],
+    ['A pizza with vegetable toppings', HET, 'Different ingredients are visible.'],
+    ['A mixture of iron filings and sulfur powder', HET, 'The solids remain separate particles.'],
+    ['Muddy river water', HET, 'Suspended soil makes the composition nonuniform.'],
+    ['A bowl of rice and beans', HET, 'The two components are visibly distinct.'],
+    ['Water containing undissolved excess salt crystals', HET, 'The solid crystals form a separate phase.'],
+  ])
+  .classify('Which method best completes this separation: **{item}**?',
+    ['Filtration', 'Evaporation', 'Magnet', 'Sieving', 'Distillation'], [
+      ['Remove coffee grounds from brewed coffee', 'Filtration', 'A filter traps insoluble grounds.'],
+      ['Collect chalk powder suspended in water', 'Filtration', 'Insoluble chalk stays on the filter.'],
+      ['Remove tea leaves from tea using a fine filter', 'Filtration', 'The leaves are trapped while the liquid passes.'],
+      ['Recover dissolved salt when collecting the water is unnecessary', 'Evaporation', 'Water leaves as vapor and salt remains.'],
+      ['Recover copper sulfate crystals from its water solution', 'Evaporation', 'Removing water leaves the dissolved solid.'],
+      ['Obtain sea salt from seawater in a shallow pond', 'Evaporation', 'The water evaporates and salt remains.'],
+      ['Pull iron nails out of dry sawdust', 'Magnet', 'Iron is attracted to a magnet; sawdust is not.'],
+      ['Collect steel paper clips from plastic beads', 'Magnet', 'Ordinary steel paper clips are magnetic.'],
+      ['Separate iron filings from powdered sulfur before any reaction', 'Magnet', 'The unreacted iron retains its magnetism.'],
+      ['Separate large pebbles from fine dry soil', 'Sieving', 'A screen separates particles by size.'],
+      ['Remove large bran flakes from fine flour', 'Sieving', 'The fine flour passes through the mesh.'],
+      ['Separate large beads from small beads using a mesh', 'Sieving', 'Only the smaller beads fit through the holes.'],
+      ['Collect pure liquid water from salt water by boiling and condensing', 'Distillation', 'Water vapor is cooled and collected; salt stays behind.'],
+      ['Recover liquid water from a sugar solution using a condenser', 'Distillation', 'Vaporized water condenses into a separate container.'],
+      ['Separate water from dissolved nonvolatile dye and collect the water', 'Distillation', 'The dye stays behind while water vapor is condensed.'],
+    ])
+  .trueFalse('Two samples of the same pure compound have the same ratio of elements.', true, 'A compound has a fixed composition.')
+  .trueFalse('Adding more water to a salt solution changes the formula of the salt.', false, 'Dilution changes the mixture ratio, not the identity of the salt.')
+  .trueFalse('Oxygen gas (O2) is a compound because its molecules contain two atoms.', false, 'Both atoms are oxygen, so it is an element.')
+  .trueFalse('A clear liquid must be a pure substance.', false, 'A homogeneous mixture, such as salt water, can also be clear.')
+  .trueFalse('All mixtures contain substances in a fixed ratio.', false, 'Mixture proportions can vary.')
+  .trueFalse('Filtering salt water through ordinary filter paper removes dissolved salt.', false, 'Dissolved salt passes through ordinary filter paper.')
+  .trueFalse('Water molecules contain hydrogen and oxygen atoms chemically bonded together.', true, 'Water is a compound, not a mixture of the gases.')
+  .trueFalse('Mixing two elements always produces a compound.', false, 'They may simply form a mixture without a chemical reaction.');
+
 export const matter: Topic = {
   meta: {
     id: 'matter',

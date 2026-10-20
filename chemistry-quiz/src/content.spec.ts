@@ -172,6 +172,36 @@ describe('local API facade', () => {
 });
 
 describe('quiz content', () => {
+  it('has doubled every topic bank to 510 total questions', () => {
+    expect(Object.fromEntries(TOPICS.map((topic) => [topic.meta.id, topic.questions.length]))).toEqual({
+      matter: 126,
+      atoms: 50,
+      periodic: 50,
+      changes: 162,
+      equations: 122,
+    });
+    expect(questions).toHaveLength(510);
+    expect(content.listTopics().reduce((total, topic) => total + topic.questionCount, 0)).toBe(510);
+  });
+
+  it('adds distinct questions rather than copies of existing questions', () => {
+    const originalCounts = { matter: 63, atoms: 25, periodic: 25, changes: 81, equations: 61 };
+    for (const topic of TOPICS) {
+      const signatures = new Set<string>();
+      for (const [index, question] of topic.questions.entries()) {
+        const signature = JSON.stringify({
+          prompt: question.prompt,
+          visual: question.visual,
+          options: question.type === 'equation' ? undefined : question.options,
+          equation: question.type === 'equation' ? question.equation : undefined,
+        });
+        if (index >= originalCounts[topic.meta.id]) expect(signatures.has(signature)).toBe(false);
+        signatures.add(signature);
+        expect(question.explanation.trim()).not.toBe('');
+      }
+    }
+  });
+
   it('has unique question ids', () => {
     expect(new Set(questions.map((q) => q.id)).size).toBe(questions.length);
   });

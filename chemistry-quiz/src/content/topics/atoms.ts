@@ -161,6 +161,54 @@ q.choice(
     'Sodium is element number 11.',
   );
 
+for (const [protons, neutrons, electrons] of [
+  [3, 4, 2], [9, 10, 10], [12, 12, 10], [16, 16, 18], [10, 10, 10],
+]) {
+  const charge = protons - electrons;
+  const label = charge > 0 ? `+${charge}` : String(charge);
+  q.choice(
+    `A particle has ${protons} protons, ${neutrons} neutrons and ${electrons} electrons. What is its net charge?`,
+    ['-2', '-1', '0', '+1', '+2'], label,
+    `Net charge = protons - electrons = ${protons} - ${electrons} = ${label}. Neutrons have no charge.`,
+  );
+}
+
+for (const [protons, neutrons] of [[2, 2], [6, 8], [11, 12], [13, 14], [20, 20]]) {
+  q.choice(
+    `What is the mass number of an atom with ${protons} protons and ${neutrons} neutrons?`,
+    [...new Set([protons, neutrons, protons + neutrons, protons + neutrons + 1])].map(String),
+    String(protons + neutrons),
+    `Mass number = protons + neutrons = ${protons + neutrons}.`,
+  );
+}
+
+for (const [protons, mass] of [[3, 7], [5, 11], [8, 18], [15, 31], [19, 39]]) {
+  q.choice(
+    `An atom has atomic number ${protons} and mass number ${mass}. How many neutrons does it have?`,
+    [...new Set([protons, mass, mass - protons, mass + protons])].map(String),
+    String(mass - protons),
+    `Neutrons = mass number - proton count = ${mass} - ${protons} = ${mass - protons}.`,
+  );
+}
+
+for (const protons of [4, 7, 13, 18, 20]) {
+  q.choice(
+    `A neutral atom has ${protons} protons. How many electrons does it have?`,
+    [protons - 1, protons, protons + 1, protons * 2].map(String), String(protons),
+    'A neutral atom has equal numbers of positive protons and negative electrons.',
+  );
+}
+
+for (const [element, electrons, outer] of [
+  ['Lithium', 3, 1], ['Beryllium', 4, 2], ['Boron', 5, 3], ['Nitrogen', 7, 5], ['Neon', 10, 8],
+] as const) {
+  q.choice(
+    `${element} has ${electrons} electrons. How many are in its outermost ring?`,
+    ['1', '2', '3', '5', '8'], String(outer),
+    `Two electrons fill the first ring, leaving ${outer} in the second ring.`,
+  );
+}
+
 export const atoms: Topic = {
   meta: {
     id: 'atoms',

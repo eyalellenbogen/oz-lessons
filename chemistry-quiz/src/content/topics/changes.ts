@@ -132,6 +132,92 @@ q.classify('Is this a physical or chemical PROPERTY?\n\n**{item}**', OPTIONS, [
     'Shape change is physical. Gas, color change, light/heat, and a new solid forming are signs of a chemical change.',
   );
 
+q.classify('Classify the PROPERTY described: **{item}**', OPTIONS, [
+  ['Aluminum can be rolled into thin foil', P, 'Malleability changes shape without changing identity.'],
+  ['Copper can be drawn into wire', P, 'Ductility is a physical property.'],
+  ['Glass allows light to pass through', P, 'Transparency is observed without a reaction.'],
+  ['A rubber band stretches', P, 'Elasticity does not require a new substance.'],
+  ['A diamond scratches glass', P, 'Hardness is physical.'],
+  ['Honey flows more slowly than water', P, 'Viscosity describes flow.'],
+  ['A crystal has a cubic shape', P, 'Shape is physical.'],
+  ['A sample occupies 25 milliliters', P, 'Volume is measured without changing identity.'],
+  ['A metal melts at 660 degrees C', P, 'Melting point is physical.'],
+  ['A liquid boils at 78 degrees C', P, 'Boiling point is physical.'],
+  ['A powder is insoluble in water', P, 'Solubility is physical.'],
+  ['A material conducts heat well', P, 'Heat conduction does not create a substance.'],
+  ['A solid is brittle', P, 'Brittleness describes how it breaks.'],
+  ['A mineral leaves a white streak', P, 'Streak color is physical.'],
+  ['A liquid is colorless', P, 'Color is observed without a reaction.'],
+  ['A solid has a rough texture', P, 'Texture is physical.'],
+  ['A sample has a mass of 12 grams', P, 'Mass is measured without a reaction.'],
+  ['Ice is less dense than liquid water', P, 'Density is physical.'],
+  ['A polished silver surface reflects light', P, 'Reflectivity is physical.'],
+  ['A magnet attracts a steel nail', P, 'Magnetism does not change chemical identity.'],
+  ['Magnesium can burn in oxygen', C, 'Flammability describes a reaction.'],
+  ['Iron is capable of rusting in moist air', C, 'Rusting produces iron compounds.'],
+  ['Hydrogen can react with oxygen to form water', C, 'Reactivity describes formation of a new substance.'],
+  ['Limestone reacts with acid to release gas', C, 'The acid forms new substances.'],
+  ['Silver can react with sulfur compounds and tarnish', C, 'Tarnishing changes chemical identity.'],
+  ['A fuel can release energy when burned', C, 'Combustion is a chemical reaction.'],
+  ['Bleach can chemically remove a stain', C, 'Bleach reacts with stain molecules.'],
+  ['A metal resists corrosion', C, 'Corrosion resistance describes resistance to reaction.'],
+  ['A substance decomposes chemically when strongly heated', C, 'Decomposition creates different substances.'],
+  ['A powder reacts with vinegar to form carbon dioxide', C, 'New gas is produced by a reaction.'],
+  ['Copper can react to form a green patina', C, 'Patina contains new copper compounds.'],
+  ['Potassium reacts vigorously with water', C, 'Water and potassium form new substances.'],
+  ['A gas does not support combustion', C, 'Supporting a combustion reaction is chemical behavior.'],
+  ['An acid can neutralize a base', C, 'Neutralization produces new substances.'],
+  ['A substance can react with oxygen without a flame', C, 'Oxidation is a chemical reaction even without a flame.'],
+])
+  .classify('Classify the CHANGE described: **{item}**', OPTIONS, [
+    ['Tearing aluminum foil into strips', P, 'Only size and shape change.'],
+    ['Sharpening a pencil', P, 'Material is removed without forming a new substance.'],
+    ['Grinding coffee beans', P, 'Grinding reduces particle size.'],
+    ['Steam condensing on a bathroom mirror', P, 'Water remains water.'],
+    ['Dry ice turning directly into carbon dioxide gas', P, 'Sublimation changes state, not identity.'],
+    ['Frost forming directly from water vapor', P, 'Deposition changes state.'],
+    ['Stretching copper into a wire', P, 'Only the shape changes.'],
+    ['Bending a paper clip without breaking it', P, 'The metal remains the same substance.'],
+    ['Breaking a glass cup', P, 'The pieces are still glass.'],
+    ['Melting candle wax without burning it', P, 'Wax changes from solid to liquid.'],
+    ['Dissolving a salt crystal in water', P, 'No new substance is formed in this classroom classification.'],
+    ['Separating gravel with a screen', P, 'Separation does not change chemical identities.'],
+    ['Mixing dry sand with dry sugar', P, 'The two solids remain unchanged.'],
+    ['Inflating a balloon with air', P, 'Air changes location and volume.'],
+    ['Compressing air in a sealed syringe', P, 'Only the gas volume changes.'],
+    ['Freezing melted candle wax', P, 'Liquid wax becomes solid wax.'],
+    ['Cutting a sheet of paper into squares', P, 'The paper changes shape.'],
+    ['Evaporating water to leave salt crystals behind', P, 'The water and salt retain their identities.'],
+    ['A cut banana turning brown through reaction with air', C, 'Oxidation produces new substances.'],
+    ['An egg white becoming firm during cooking', C, 'Heat changes protein structures.'],
+    ['A candle flame burning wax vapor', C, 'Wax reacts with oxygen.'],
+    ['A steel gate forming rust', C, 'Iron compounds form.'],
+    ['Grape juice fermenting', C, 'Microorganisms produce new substances.'],
+    ['A green leaf making glucose during photosynthesis', C, 'Carbon dioxide and water become new substances.'],
+    ['Hydrogen peroxide decomposing into water and oxygen', C, 'One compound becomes different substances.'],
+    ['An antacid neutralizing stomach acid', C, 'Neutralization changes the substances.'],
+    ['Two clear solutions reacting to form an insoluble solid', C, 'A new solid precipitate forms.'],
+    ['A glow stick producing light after its chemicals mix', C, 'A chemical reaction releases light.'],
+    ['A match head igniting', C, 'Combustion creates new substances.'],
+    ['A copper roof developing a green patina', C, 'Copper reacts to make new compounds.'],
+    ['Bread dough browning as it bakes', C, 'New substances form during browning.'],
+    ['A car engine burning gasoline', C, 'Fuel reacts with oxygen.'],
+    ['A battery producing electricity through reactions', C, 'Chemical reactants are converted into products.'],
+    ['Yeast producing carbon dioxide in bread dough', C, 'Fermentation forms a new gas.'],
+    ['Milk forming curds after acid is added', C, 'Acid changes the milk proteins.'],
+    ['Sulfur and iron reacting on heating to form iron sulfide', C, 'A new compound forms.'],
+  ])
+  .trueFalse('Bubbles in boiling water alone prove a chemical reaction occurred.', false, 'Boiling makes water vapor, not a new substance.')
+  .trueFalse('A color change is always enough by itself to prove a chemical reaction.', false, 'Mixing colored liquids can also change the appearance without a reaction.')
+  .trueFalse('A physical change can involve a change in energy.', true, 'Melting absorbs heat while the substance remains the same.')
+  .trueFalse('Every chemical reaction must produce a visible flame.', false, 'Rusting and many other reactions occur without flames.')
+  .trueFalse('A new insoluble solid forming when solutions react is called a precipitate.', true, 'Precipitate formation is evidence of a chemical reaction.')
+  .trueFalse('A change that is difficult to reverse must be chemical.', false, 'Breaking glass is physical even though restoring the cup is difficult.')
+  .trueFalse('Cutting a metal into smaller pieces changes its chemical identity.', false, 'Size changes, but the metal stays the same substance.')
+  .trueFalse('Chemical properties describe the ability to form different substances.', true, 'They describe how a material reacts.')
+  .trueFalse('Boiling point can help identify a pure substance without changing its chemical identity.', true, 'Boiling point is a physical property.')
+  .trueFalse('Rust has the same chemical identity as the iron it formed from.', false, 'Rust contains new iron compounds formed by reaction.');
+
 export const changes: Topic = {
   meta: {
     id: 'changes',

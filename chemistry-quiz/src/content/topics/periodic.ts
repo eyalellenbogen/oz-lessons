@@ -99,6 +99,39 @@ q.choice(
     'Mercury is a liquid and sodium is a solid.',
   );
 
+q.classify('Which family contains **{item}**?',
+  ['Alkali metals', 'Alkaline earth metals', 'Transition metals', 'Halogens', 'Noble gases'], [
+    ['Sodium (Na)', 'Alkali metals', 'Sodium belongs to group 1.'],
+    ['Potassium (K)', 'Alkali metals', 'Potassium belongs to group 1.'],
+    ['Lithium (Li)', 'Alkali metals', 'Lithium belongs to group 1.'],
+    ['Magnesium (Mg)', 'Alkaline earth metals', 'Magnesium belongs to group 2.'],
+    ['Beryllium (Be)', 'Alkaline earth metals', 'Beryllium belongs to group 2.'],
+    ['Calcium (Ca)', 'Alkaline earth metals', 'Calcium belongs to group 2.'],
+    ['Iron (Fe)', 'Transition metals', 'Iron is in the middle block.'],
+    ['Copper (Cu)', 'Transition metals', 'Copper is in the middle block.'],
+    ['Silver (Ag)', 'Transition metals', 'Silver is in the middle block.'],
+    ['Bromine (Br)', 'Halogens', 'Bromine belongs to group 17.'],
+    ['Iodine (I)', 'Halogens', 'Iodine belongs to group 17.'],
+    ['Chlorine (Cl)', 'Halogens', 'Chlorine belongs to group 17.'],
+    ['Helium (He)', 'Noble gases', 'Helium belongs to group 18.'],
+    ['Argon (Ar)', 'Noble gases', 'Argon belongs to group 18.'],
+    ['Krypton (Kr)', 'Noble gases', 'Krypton belongs to group 18.'],
+  ])
+  .classify('Classify **{item}** as a metal, nonmetal or metalloid.', ['Metal', 'Nonmetal', 'Metalloid'], [
+    ['Aluminum (Al)', 'Metal', 'Aluminum conducts electricity and is malleable.'],
+    ['Zinc (Zn)', 'Metal', 'Zinc is a metal in the central part of the table.'],
+    ['Phosphorus (P)', 'Nonmetal', 'Phosphorus lies on the nonmetal side of the staircase.'],
+    ['Sulfur (S)', 'Nonmetal', 'Sulfur is a brittle nonmetal.'],
+    ['Boron (B)', 'Metalloid', 'Boron sits along the staircase.'],
+    ['Germanium (Ge)', 'Metalloid', 'Germanium has properties of both metals and nonmetals.'],
+  ])
+  .classify('What is the state of **{item}** at room temperature?', ['Solid', 'Liquid', 'Gas'], [
+    ['Bromine (Br)', 'Liquid', 'Bromine is the only liquid nonmetal at room temperature.'],
+    ['Copper (Cu)', 'Solid', 'Copper is solid at room temperature.'],
+    ['Fluorine (F)', 'Gas', 'Fluorine is a gaseous halogen.'],
+    ['Argon (Ar)', 'Gas', 'Argon is a noble gas.'],
+  ]);
+
 export const periodic: Topic = {
   meta: {
     id: 'periodic',

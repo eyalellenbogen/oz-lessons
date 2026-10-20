@@ -94,7 +94,7 @@ async function showHome() {
         store.write(COUNT_KEY, count);
       },
     },
-    ...[5, 10, 15, 20, 30].map((n) => h('option', { value: n, selected: n === count }, `${n} questions`)),
+    ...[5, 10, 15, 20, 30, 50].map((n) => h('option', { value: n, selected: n === count }, `${n} questions`)),
   );
 
   const allIds = topics.map((t) => t.id);
