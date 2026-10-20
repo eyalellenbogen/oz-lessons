@@ -42,6 +42,38 @@ describe('EquationsService', () => {
 });
 
 describe('local quiz domain', () => {
+  it('exhausts each topic before repeating questions across quizzes', () => {
+    const randomSpy = jest.spyOn(Math, 'random').mockReturnValue(0.5);
+    try {
+      const rotatingQuiz = new QuizService(content, equations);
+      for (let cycle = 0; cycle < 2; cycle++) {
+        const seen = new Set<string>();
+        for (const topic of TOPICS) {
+          for (let index = 0; index < topic.questions.length; index++) {
+            const [question] = rotatingQuiz.buildQuiz(topic.meta.id, 1);
+            expect(seen.has(question.id)).toBe(false);
+            seen.add(question.id);
+          }
+        }
+        expect(seen.size).toBe(questions.length);
+      }
+    } finally {
+      randomSpy.mockRestore();
+    }
+  });
+
+  it('uses remaining fresh questions when a quiz crosses a topic cycle', () => {
+    const rotatingQuiz = new QuizService(content, equations);
+    const topic = TOPICS[0];
+    const first = Array.from({ length: topic.questions.length - 1 }, () => rotatingQuiz.buildQuiz(topic.meta.id, 1)[0]);
+    const remaining = topic.questions.find((question) => !first.some((picked) => picked.id === question.id))!;
+    const next = rotatingQuiz.buildQuiz(topic.meta.id, 3);
+    expect(next.some((question) => question.id === remaining.id)).toBe(true);
+    expect(new Set(next.map((question) => question.id)).size).toBe(next.length);
+    const following = rotatingQuiz.buildQuiz(topic.meta.id, 1);
+    expect(next.filter((question) => question.id !== remaining.id).map((question) => question.id)).not.toContain(following[0].id);
+  });
+
   it('builds unique public questions evenly across selected topics', () => {
     const result = quiz.buildQuiz('matter,atoms,matter', 6);
     expect(result).toHaveLength(6);

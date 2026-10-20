@@ -17,6 +17,8 @@ export interface CheckResult {
 }
 
 export class QuizService {
+  private readonly seenByTopic = new Map<TopicId, Set<string>>();
+
   constructor(
     private readonly content: ContentService,
     private readonly equations: EquationsService,
@@ -34,12 +36,27 @@ export class QuizService {
     const unknown = requested.find((id) => !this.content.hasTopic(id));
     if (unknown) throw new Error(`Unknown topic: ${unknown}`);
 
-    const pools = this.content.getQuestionsFor(requested as TopicId[]).map((p) => shuffle(p));
+    const pools = this.content.getQuestionsFor(requested as TopicId[]).map((questions) => {
+      const topic = questions[0]?.topic;
+      const seen = topic ? this.seenByTopic.get(topic) ?? new Set<string>() : new Set<string>();
+      if (topic) this.seenByTopic.set(topic, seen);
+      const randomized = shuffle(questions);
+      return {
+        questions: [...randomized.filter((question) => !seen.has(question.id)), ...randomized.filter((question) => seen.has(question.id))],
+        seen,
+        size: questions.length,
+      };
+    });
     const picked: Question[] = [];
-    while (picked.length < count && pools.some((p) => p.length > 0)) {
+    while (picked.length < count && pools.some((pool) => pool.questions.length > 0)) {
       for (const pool of pools) {
-        const next = pool.shift();
-        if (next && picked.length < count) picked.push(next);
+        if (picked.length >= count) break;
+        const next = pool.questions.shift();
+        if (next) {
+          if (pool.seen.size === pool.size) pool.seen.clear();
+          pool.seen.add(next.id);
+          picked.push(next);
+        }
       }
     }
     return shuffle(picked).map(toPublic);
